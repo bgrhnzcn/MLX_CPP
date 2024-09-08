@@ -6,7 +6,7 @@
 /*   By: bgrhnzcn <bgrhnzcn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 15:24:23 by bgrhnzcn          #+#    #+#             */
-/*   Updated: 2024/09/08 02:41:59 by bgrhnzcn         ###   ########.fr       */
+/*   Updated: 2024/09/08 15:31:56 by bgrhnzcn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,11 @@ namespace mlx
 	template <typename T> class Vec3;
 	template <typename T> class Vec4;
 	//function types
-	typedef int(*EmptyParamFunc)();
+	typedef int(*EmptyEventFunc)();
+	typedef int(*KeyEventFunc)(int keycode, void *param);
+	typedef int(*MouseButtonEventFunc)(int keycode, int x, int y, void *param);
+	typedef int(*MouseMoveEventFunc)(int x, int y, void *param);
+	typedef int(*EventFunc)(void *param);
 } // namespace mlx
 
 #endif

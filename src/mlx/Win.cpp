@@ -6,7 +6,7 @@
 /*   By: bgrhnzcn <bgrhnzcn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 11:51:02 by bgrhnzcn          #+#    #+#             */
-/*   Updated: 2024/09/08 03:37:38 by bgrhnzcn         ###   ########.fr       */
+/*   Updated: 2024/09/08 14:13:25 by bgrhnzcn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,7 @@ void mlx::Win::mlxKeyHook(int (*func_ptr)(int keycode, void *param), void *param
 	mlx_key_hook(this->win_ptr, *func, param);
 }
 
-void mlx::Win::mlxHook(int x_event, int x_mask,
-	int (*func_ptr)(int keycode, void *param), void *param)
+void mlx::Win::mlxHook(int x_event, int x_mask, int (*func_ptr)(int keycode, void *param), void *param)
 {
 	EmptyParamFunc* func = reinterpret_cast<EmptyParamFunc*>(&func_ptr);
 	mlx_hook(this->getWinPtr(), x_event, x_mask, *func, param);
