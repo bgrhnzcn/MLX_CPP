@@ -6,16 +6,16 @@
 /*   By: bgrhnzcn <bgrhnzcn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 11:51:02 by bgrhnzcn          #+#    #+#             */
-/*   Updated: 2024/09/08 14:13:25 by bgrhnzcn         ###   ########.fr       */
+/*   Updated: 2024/09/16 01:20:02 by bgrhnzcn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <string>
 
 extern "C"
 {
 #include <mlx.h>
 }
-
-#include <string>
 
 #include "fwd.hpp"
 #include "Mlx.hpp"
@@ -30,12 +30,12 @@ mlx::Win::Win(mlx::Mlx &mlx, int width, int height, const std::string &title)
 								   this->width,
 								   this->height,
 								   (char *)this->title.c_str());
-	this->currMousePos = this->mlxGetMousePos();
-	this->prevMousePos = this->currMousePos;
+	this->input = new mlx::Input(this);
 }
 
 mlx::Win::~Win(void)
 {
+	free(this->input);
 	mlx_destroy_window(this->mlx.getMlxPtr(), this->win_ptr);
 }
 
@@ -54,6 +54,11 @@ void *mlx::Win::getWinPtr(void) const
 	return (this->win_ptr);
 }
 
+mlx::Input &mlx::Win::getInput(void)
+{
+	return (*this->input);
+}
+
 int mlx::Win::getWidth(void) const
 {
 	return (this->width);
@@ -64,37 +69,7 @@ int mlx::Win::getHeight(void) const
 	return (this->height);
 }
 
-mlx::Vec2<float> mlx::Win::getCurrMousePos(void) const
-{
-	return (this->currMousePos);
-}
-
-mlx::Vec2<float> mlx::Win::getPrevMousePos(void) const
-{
-	return (this->prevMousePos);
-}
-
 void mlx::Win::putImage(mlx::Image &img, int x, int y)
 {
 	mlx_put_image_to_window(this->mlx.getMlxPtr(), this->win_ptr, img.getImgPtr(), x, y);
-}
-
-mlx::Vec2<float> mlx::Win::mlxGetMousePos(void)
-{
-	int x, y;
-
-	mlx_mouse_get_pos(this->getMlxPtr(), this->win_ptr, &x, &y);
-	return (mlx::Vec2<float>(x, y));
-}
-
-void mlx::Win::mlxKeyHook(int (*func_ptr)(int keycode, void *param), void *param)
-{
-	EmptyParamFunc* func = reinterpret_cast<EmptyParamFunc*>(&func_ptr);
-	mlx_key_hook(this->win_ptr, *func, param);
-}
-
-void mlx::Win::mlxHook(int x_event, int x_mask, int (*func_ptr)(int keycode, void *param), void *param)
-{
-	EmptyParamFunc* func = reinterpret_cast<EmptyParamFunc*>(&func_ptr);
-	mlx_hook(this->getWinPtr(), x_event, x_mask, *func, param);
 }

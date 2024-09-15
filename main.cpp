@@ -6,7 +6,7 @@
 /*   By: bgrhnzcn <bgrhnzcn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 19:15:59 by buozcan           #+#    #+#             */
-/*   Updated: 2024/09/08 03:39:58 by bgrhnzcn         ###   ########.fr       */
+/*   Updated: 2024/09/16 01:17:11 by bgrhnzcn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,42 +28,33 @@ extern "C"
 
 typedef struct s_data
 {
-	mlx::Mlx	&mlx;
-	mlx::Win	&win;
-	mlx::Image	&img;
-}	t_data;
+	mlx::Win &win;
+	//mlx::Image &img;
+} t_data;
 
-int key_press_handler(int keycode, void *param)
+void draw_circle(mlx::Win &win, mlx::Image &img)
 {
-	t_data *data = reinterpret_cast<t_data *>(param);
-	if (keycode == ESC_KEY)
+	mlx::Vec2<float> pos = win.getInput().getMousePos();
+	float radius = 50;
+	for (int i = pos.getX() - radius; i < pos.getX() + radius; i++)
 	{
-		mlx_destroy_window(data->mlx.getMlxPtr(), data->win.getWinPtr());
-		exit(EXIT_SUCCESS);
+		for (int j = pos.getY() - radius; j < pos.getY() + radius; j++)
+		{
+			if (mlx::Vec2<float>(i, j).dist(pos) < radius)
+				img.putPixel(i, j, Color::Red);
+		}
 	}
-	if (keycode == R_KEY)
-	{
-		data->img.fill(Color::Black);
-		data->win.putImage(data->img, 0, 0);
-	}
-	return (0);
 }
 
-int mouse_press_handler(int keycode, void *param)
+int update(void *param)
 {
-	t_data *data = reinterpret_cast<t_data *>(param);
-	float radius = 50;
-	if (keycode == 1)
-	{
-		mlx::Vec2<float> mousePos = data->win.mlxGetMousePos();
-		std::cout << data->win.getCurrMousePos() - data->win.getPrevMousePos() << std::endl;
-		std::cout << mousePos << std::endl;
-		for (int x = mousePos.getX() - radius; x < mousePos.getX() + radius; x++)
-			for (int y = mousePos.getY() - radius; y < mousePos.getY() + radius; y++)
-				if (mousePos.dist(mlx::Vec2<float>(x, y)) < radius)
-					data->img.putPixel(x, y, Color::DarkBrown);
-		data->win.putImage(data->img, 0, 0);
-	}
+	t_data &data = *reinterpret_cast<t_data *>(param);
+
+	std::cout << "Mouse Pos: " << data.win.getInput().getMousePos() << std::endl;
+	std::cout << "Q is pressed: " << data.win.getInput().keyDown(mlx::KeyCode::Q) << std::endl;
+	//if (data.win.getInput().keyDown(mlx::KeyCode::A))
+	//	draw_circle(data.win, data.img);
+	//data.win.putImage(data.img, 0, 0);
 	return (0);
 }
 
@@ -71,10 +62,10 @@ int	main(void)
 {
 	mlx::Mlx mlx;
 	mlx::Win win = mlx::Win(mlx, 800, 600, "Hello World");
-	mlx::Image img = mlx::Image(mlx, win.getWidth(), win.getHeight());
-	t_data data{mlx, win, img};
-	win.mlxHook(mlx::KeyPress, (1<<0), key_press_handler, &data);
-	win.mlxHook(mlx::ButtonPress, (1<<2), mouse_press_handler, &data);
+	//mlx::Image img = mlx::Image(mlx, win.getWidth(), win.getHeight());
+	t_data data = {win};
+
+	mlx.mlxLoopHook(update, &data);
 	mlx.mlxLoop();
 	return (EXIT_SUCCESS);
 }

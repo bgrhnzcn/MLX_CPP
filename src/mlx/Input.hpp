@@ -6,7 +6,7 @@
 /*   By: bgrhnzcn <bgrhnzcn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 22:11:36 by bgrhnzcn          #+#    #+#             */
-/*   Updated: 2024/09/08 23:59:03 by bgrhnzcn         ###   ########.fr       */
+/*   Updated: 2024/09/16 01:27:50 by bgrhnzcn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@ extern "C"
 
 #include <string>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 
 #include "fwd.hpp"
 
+
 namespace mlx
 {
-	enum class KeyCode
+	enum KeyCode
 	{
 		ESC = XK_Escape,
 		X = XK_x,
@@ -49,28 +50,33 @@ namespace mlx
 		DOWN = XK_Down
 	};
 
-	struct KeyState
+	enum MLXEvent
 	{
-		bool isPressed;
-		bool isReleased;
+		KeyPress = 2,
+		KeyRelease = 3,
+		ButtonPress = 4,
+		ButtonRelease = 5,
+		MotionNotify = 6,
+		Expose = 12,
+		Destroy = 17
 	};
-	
+
 	class Input
 	{
+		private:
+			Win *win;
 		public:
-			std::unordered_map<KeyCode, KeyState> keys;
-			Win &win;
-		public:
-			Input(Win &win);
+			std::unordered_map<KeyCode, bool> keyStates;
+			Input(Win *win);
 			~Input(void) = default;
 		public:
-			Vec2<float> mlxGetMousePos(void);
-			void keyDown(int xEventMask, mlx::KeyEventFunc, void *param);
-			void keyUp(int xEventMask, mlx::KeyEventFunc, void *param);
+			void setKey(KeyCode key, bool state);
+			Vec2<float> getMousePos(void);
+			bool keyDown(KeyCode key);
+			void keyUp(KeyCode key, mlx::KeyEventFunc, void *param);
 			void mouseButtonDown(int xEventMask, mlx::MouseButtonEventFunc, void *param);
 			void mouseButtonUp(int xEventMask, mlx::MouseButtonEventFunc, void *param);
 			void mouseMove(int xEventMask, mlx::MouseMoveEventFunc, void *param);
-
 	};
 }
 

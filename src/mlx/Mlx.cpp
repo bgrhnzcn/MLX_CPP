@@ -6,7 +6,7 @@
 /*   By: bgrhnzcn <bgrhnzcn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 18:16:23 by buozcan           #+#    #+#             */
-/*   Updated: 2024/09/08 02:42:15 by bgrhnzcn         ###   ########.fr       */
+/*   Updated: 2024/09/16 01:04:29 by bgrhnzcn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ void mlx::Mlx::mlxLoop(void)
 	mlx_loop(this->mlx_ptr);
 }
 
-void mlx::Mlx::mlxLoopHook(int (*funct_ptr)(void *param), void *param)
+void mlx::Mlx::mlxLoopHook(mlx::EventFunc funct_ptr, void *param)
 {
-	EmptyParamFunc* epf = reinterpret_cast<EmptyParamFunc*>(&funct_ptr);
+	mlx::EmptyEventFunc* epf = reinterpret_cast<mlx::EmptyEventFunc*>(&funct_ptr);
 	mlx_loop_hook(this->mlx_ptr, *epf, param);
 }
